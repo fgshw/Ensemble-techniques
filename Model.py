@@ -5,10 +5,16 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 import pandas as pd
+import gdown
 
 # โหลดข้อมูล
 file_path = "cardio_train.csv"
 df = pd.read_csv(file_path, sep=";")
+
+url = "https://drive.google.com/drive/folders/1oM9Xl8jofR_GTD6xrbmUR3yZgrwbTID8?usp=sharing"
+output = "voting_classifier.pkl"
+
+gdown.download(url, output, quiet=False)
 
 # ทำความสะอาดข้อมูล
 df.drop(columns=["id"], inplace=True)
