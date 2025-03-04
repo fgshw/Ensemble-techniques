@@ -1,10 +1,14 @@
 import streamlit as st
 import numpy as np
 import joblib
+import os
+from sklearn.ensemble import VotingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
 
 # ตั้งค่าธีม และเพิ่มพื้นหลัง
 st.set_page_config(page_title="Cardiovascular Risk Assessment", page_icon="❤️", layout="centered")
-
 
 st.markdown(
     """
@@ -38,7 +42,7 @@ with col2:
     ap_hi = st.number_input("🩸 ความดันโลหิต Systolic", min_value=50, max_value=250, value=120)
     ap_lo = st.number_input("🩸 ความดันโลหิต Diastolic", min_value=30, max_value=200, value=80)
 
-    # คั่นกลางเพื่อควยสมมาตร
+    # คั่นกลางเพื่อความสมมาตร
     st.markdown("")
 
     cholesterol = st.selectbox("🧪 ระดับคอเลสเตอรอล", [1, 2, 3], format_func=lambda x: ["ปกติ", "สูง", "สูงมาก"][x-1])
@@ -63,14 +67,25 @@ active = int(active)
 input_data = np.array([[age, gender, height, weight, ap_hi, ap_lo, cholesterol, gluc, smoke, alco, active]])
 
 # โหลดโมเดลที่ฝึกไว้
-model = joblib.load("voting_classifier.pkl")
+model_path = "voting_classifier.pkl"
+if os.path.exists(model_path):
+    try:
+        model = joblib.load(model_path)
+    except Exception as e:
+        st.error(f"เกิดข้อผิดพลาดในการโหลดโมเดล: {e}")
+        model = None
+else:
+    st.error("❌ ไม่พบไฟล์โมเดล 'voting_classifier.pkl' กรุณาตรวจสอบว่าไฟล์อยู่ใน directory ที่ถูกต้อง")
+    model = None
 
 # ทำนายผลลัพธ์
-if st.button("🔍 ทำนายผลลัพธ์", use_container_width=True):
-    prediction = model.predict(input_data)[0]
-    
-    st.markdown("---")
-    if prediction == 1:
-        st.error("⚠️ คุณมีความเสี่ยงต่อโรคหัวใจ โปรดปรึกษาแพทย์")
-    else:
-        st.success("✅ คุณมีสุขภาพดี ไม่มีความเสี่ยงต่อโรคหัวใจ")
+if st.button("🔍 ทำนายผลลัพธ์", use_container_width=True) and model is not None:
+    try:
+        prediction = model.predict(input_data)[0]
+        st.markdown("---")
+        if prediction == 1:
+            st.error("⚠️ คุณมีความเสี่ยงต่อโรคหัวใจ โปรดปรึกษาแพทย์")
+        else:
+            st.success("✅ คุณมีสุขภาพดี ไม่มีความเสี่ยงต่อโรคหัวใจ")
+    except Exception as e:
+        st.error(f"เกิดข้อผิดพลาดระหว่างการทำนาย: {e}")
