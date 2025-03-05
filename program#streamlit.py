@@ -7,9 +7,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
 import sklearn
-import streamlit as st
-st.write("scikit-learn version:", sklearn.__version__)
 
+st.write("scikit-learn version:", sklearn.__version__)
 
 # ตั้งค่าธีม และเพิ่มพื้นหลัง
 st.set_page_config(page_title="Cardiovascular Risk Assessment", page_icon="❤️", layout="centered")
@@ -19,6 +18,13 @@ st.markdown(
     <style>
     .stApp {
         background-color: #FFFFFF;
+        color: #000000; /* เปลี่ยนตัวอักษรเป็นสีดำ */
+    }
+    h1, h2, h3, h4, h5, h6, p, label, span {
+        color: #000000 !important; /* บังคับให้ตัวหนังสือเป็นสีดำ */
+    }
+    .stAlert[data-baseweb="alert"] {
+        color: #FFFFFF !important; /* ข้อความใน Alert ยังคงเป็นสีขาว */
     }
     </style>
     """,
