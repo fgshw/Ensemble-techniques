@@ -6,6 +6,10 @@ from sklearn.ensemble import VotingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
+import sklearn
+import streamlit as st
+st.write("scikit-learn version:", sklearn.__version__)
+
 
 # ตั้งค่าธีม และเพิ่มพื้นหลัง
 st.set_page_config(page_title="Cardiovascular Risk Assessment", page_icon="❤️", layout="centered")
